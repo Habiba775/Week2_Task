@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore; */
 using week2_Task.Data;
 using System.Text.Json.Serialization;
+using week2_Task.Services;
 
 
 
@@ -18,6 +19,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<LinqDemoService>();
+
 
 builder.Services.AddCors(options =>
 {

@@ -30,7 +30,7 @@ namespace week2_Task.Controllers
         [Route("{id:guid}")]
         public IActionResult GetAllMerchantsById(Guid id)
         {
-            var merchant = _dbContext.Merchants.Find(id);
+            var merchant = _dbContext.Merchants.Where(m=>m.Id==id);
             if (merchant == null)
             {
                 return NotFound();

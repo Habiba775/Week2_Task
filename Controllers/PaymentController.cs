@@ -85,10 +85,12 @@ namespace week2_Task.Controllers
         }
 
         // PUT: api/payment/{id}
-        [HttpPut("{id:int}")]
-        public IActionResult UpdatePayment(int id, [FromBody] UpdatePaymentDTO updateDto)
+        [HttpPut("{id}")]
+        public IActionResult UpdatePayment(Guid id, [FromBody] UpdatePaymentDTO updateDto)
         {
-            var payment = _dbContext.Payments.Find(id);
+            var payment = _dbContext.Payments
+       .Include(p => p.Merchant) 
+       .FirstOrDefault(p => p.Id == id);
 
             if (payment == null)
                 return NotFound();
@@ -98,6 +100,10 @@ namespace week2_Task.Controllers
             payment.Method = updateDto.Method;
             payment.Status = updateDto.Status;
             payment.ProcessedDate = updateDto.ProcessedDate;
+            
+
+
+
 
             _dbContext.SaveChanges();
 

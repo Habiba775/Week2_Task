@@ -12,8 +12,8 @@ using week2_Task.Data;
 namespace week2_Task.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250721084439_AddProcessedDate")]
-    partial class AddProcessedDate
+    [Migration("20250722033325_CreateTransactionProper")]
+    partial class CreateTransactionProper
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,14 +32,17 @@ namespace week2_Task.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -50,28 +53,27 @@ namespace week2_Task.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.ToTable("Merchants");
                 });
 
             modelBuilder.Entity("week2_Task.Models.Entities.Payment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("PaymentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Currency")
                         .IsRequired()
@@ -87,14 +89,58 @@ namespace week2_Task.Migrations
                     b.Property<DateTime?>("ProcessedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<int?>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
-                    b.HasKey("Id");
+                    b.HasKey("PaymentId");
 
                     b.HasIndex("MerchantId");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("week2_Task.Models.Entities.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("ProcessedAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("TransactionReference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("TransactionReference")
+                        .IsUnique();
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("week2_Task.Models.Entities.Payment", b =>
@@ -108,9 +154,25 @@ namespace week2_Task.Migrations
                     b.Navigation("Merchant");
                 });
 
+            modelBuilder.Entity("week2_Task.Models.Entities.Transaction", b =>
+                {
+                    b.HasOne("week2_Task.Models.Entities.Payment", "Payment")
+                        .WithMany("Transactions")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
+                });
+
             modelBuilder.Entity("week2_Task.Models.Entities.Merchant", b =>
                 {
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("week2_Task.Models.Entities.Payment", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

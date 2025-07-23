@@ -28,40 +28,54 @@ namespace week2_Task.Controllers
         //so its fast and simple as it gets by id one row
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult GetAllMerchantsById(Guid id)
+        public IActionResult GetMerchantById(Guid id)
         {
-            var merchant = _dbContext.Merchants.Where(m=>m.Id==id);
+            var merchant = _dbContext.Merchants.FirstOrDefault(m => m.Id == id);
+
             if (merchant == null)
             {
-                return NotFound();
+                return NotFound($"Merchant with ID {id} was not found.");
             }
+
             return Ok(merchant);
         }
 
         //async as it takes some time so non blocking 
 
         [HttpPost]
-        public async Task<IActionResult> AddMerchantAsync([FromBody] AddMerchantDTO addMerchantDto)
+        public async Task<IActionResult> AddMerchant([FromBody] AddMerchantDTO dto)
         {
-            if (!ModelState.IsValid || addMerchantDto == null)
-                return BadRequest(ModelState);
+            var merchant = new Merchant
+            {
+                Id = Guid.NewGuid(),
+                Name = dto.Name,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                Address = dto.Address,
+                CreatedDate = DateTime.UtcNow
+            };
 
-            var merchantEntity = new Merchant
-            (
-                addMerchantDto.Name,
-                addMerchantDto.Email,
-                addMerchantDto.Phone,
-                addMerchantDto.Address
-            );
+            try
+            {
+                _dbContext.Merchants.Add(merchant);
+                await _dbContext.SaveChangesAsync();
 
-          
-            await _dbContext.Merchants.AddAsync(merchantEntity);
-
-            
-            await _dbContext.SaveChangesAsync();
-
-            return Ok(merchantEntity);
+                return Ok(new
+                {
+                    message = "Merchant created successfully",
+                    merchantId = merchant.Id
+                });
+            }
+            catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("IX_Merchants_Email_Unique") == true)
+            {
+                return Conflict("Email already exists. Please use a different one.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
         }
+
 
         //sync simple
         [HttpPut]

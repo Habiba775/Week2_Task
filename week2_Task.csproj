@@ -4,9 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>82c8d1ea-88c4-4537-92b2-e48fc38b145f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.3.0" />
     
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">

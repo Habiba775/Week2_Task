@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using week2_Task.Data;
 using week2_Task.Models.DTOS;
@@ -6,8 +7,10 @@ using week2_Task.Models.Entities;
 
 namespace week2_Task.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MerchantController : ControllerBase
     {
         private readonly ApplicationDBContext _dbContext;
@@ -18,14 +21,13 @@ namespace week2_Task.Controllers
         }
 
         [HttpGet]
-        //asynch method used when with external methods and non blocking operations
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync()
         {
             var merchants = await _dbContext.Merchants.ToListAsync();
             return Ok(merchants);
         }
-        //sync block the thread while waiting for the db
-        //so its fast and simple as it gets by id one row
+        
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetMerchantById(Guid id)
@@ -40,8 +42,8 @@ namespace week2_Task.Controllers
             return Ok(merchant);
         }
 
-        //async as it takes some time so non blocking 
-
+        
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddMerchant([FromBody] AddMerchantDTO dto)
         {

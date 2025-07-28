@@ -97,6 +97,7 @@ using (var scope = app.Services.CreateScope())
 //just msg
 
 app.Logger.LogInformation(5, "db is ready");
+app.Logger.LogInformation(5, "db is ready");
 
 // Role seeding like the first register
 using (var scope = app.Services.CreateScope())

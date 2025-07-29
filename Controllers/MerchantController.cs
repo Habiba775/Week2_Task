@@ -24,6 +24,7 @@ namespace week2_Task.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync()
         {
+            throw new NotImplementedException();
             var merchants = await _dbContext.Merchants.ToListAsync();
             return Ok(merchants);
         }

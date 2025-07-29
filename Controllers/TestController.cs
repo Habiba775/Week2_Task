@@ -1,18 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Authorization;
-
+﻿using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 [ApiController]
 [Route("api/[controller]")]
 public class TestController : ControllerBase
 {
-    [HttpGet("admin")]
-    [Authorize(Roles = "Admin")]
-    public IActionResult AdminOnly() => Ok("Admin");
-
-    [HttpGet("user")]
-    [Authorize(Roles = "User,Admin")]
-    public IActionResult UserOrAdmin() => Ok(" User");
+    [HttpGet]
+    public IActionResult Index()
+    {
+        Log.Information(" Logging from controller at {Time}", DateTime.UtcNow);
+        return Ok("Log written");
+    }
 }

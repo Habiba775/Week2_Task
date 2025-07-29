@@ -8,6 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="TestPayment\**" />
+	  <Content Remove="TestPayment\**" />
+	  <EmbeddedResource Remove="TestPayment\**" />
+	  <None Remove="TestPayment\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="FluentAssertions" Version="8.5.0" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
@@ -25,6 +32,11 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7" />
+		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+		<PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+		<PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.2.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 
 	</ItemGroup>
@@ -33,7 +45,6 @@
 		<Folder Include="Models\NewFolder1\" />
 		<Folder Include="Models\NewFolder2\" />
 		<Folder Include="Test\" />
-		<Folder Include="NewFolder\" />
 	</ItemGroup>
 
 </Project>

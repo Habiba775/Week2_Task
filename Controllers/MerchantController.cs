@@ -10,7 +10,7 @@ namespace week2_Task.Controllers
    
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class MerchantController : ControllerBase
     {
         private readonly ApplicationDBContext _dbContext;
@@ -24,7 +24,7 @@ namespace week2_Task.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync()
         {
-            throw new NotImplementedException();
+            
             var merchants = await _dbContext.Merchants.ToListAsync();
             return Ok(merchants);
         }
@@ -43,10 +43,10 @@ namespace week2_Task.Controllers
             return Ok(merchant);
         }
 
-        
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> AddMerchant([FromBody] AddMerchantDTO dto)
+        public async Task<IActionResult> AddMerchant( AddMerchantDTO dto)
         {
             var merchant = new Merchant
             {
